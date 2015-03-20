@@ -252,11 +252,11 @@ class ExternalMerger(Merger):
         for k, v in iterator:
             d[k] = comb(d[k], v) if k in d else creator(v)
 
-            c += 1
             if c % batch == 0 and get_used_memory() > self.memory_limit:
                 self._spill()
                 self._partitioned_mergeValues(iterator, self._next_limit())
                 break
+            c += 1
 
     def _partition(self, key):
         """ Return the partition for key """
@@ -274,10 +274,10 @@ class ExternalMerger(Merger):
             if not limit:
                 continue
 
-            c += 1
             if c % batch == 0 and get_used_memory() > limit:
                 self._spill()
                 limit = self._next_limit()
+            c += 1
 
     def mergeCombiners(self, iterator, check=True):
         """ Merge (K,V) pair by mergeCombiner """
@@ -290,11 +290,11 @@ class ExternalMerger(Merger):
             if not check:
                 continue
 
-            c += 1
             if c % batch == 0 and get_used_memory() > self.memory_limit:
                 self._spill()
                 self._partitioned_mergeCombiners(iterator, self._next_limit())
                 break
+            c += 1
 
     def _partitioned_mergeCombiners(self, iterator, limit=0):
         """ Partition the items by key, then merge them """
@@ -306,10 +306,10 @@ class ExternalMerger(Merger):
             if not limit:
                 continue
 
-            c += 1
             if c % self.batch == 0 and get_used_memory() > limit:
                 self._spill()
                 limit = self._next_limit()
+            c += 1
 
     def _spill(self):
         """
